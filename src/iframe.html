@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+
+<html>
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	</head>
+
+	<body>
+
+		<script>
+		( function() {
+			function loadScripts( scripts, callback ) {
+				var i = 0;
+
+				function onError() {
+					callback( new Error( 'Error loading: ' + scripts[ i - 1 ] ) );
+				}
+
+				function next() {
+					if ( i >= scripts.length ) {
+						callback();
+					} else {
+						var script = document.createElement( 'script' );
+						script.addEventListener( 'load', next );
+						script.addEventListener( 'error', onError );
+						script.crossOrigin = 'anonymous';
+						script.src = scripts[ i ];
+						i++;
+
+						document.body.appendChild(script)
+					}
+				}
+
+				next();
+			}
+
+			var config = JSON.parse( decodeURIComponent( window.location.hash.substr( 1 ) ) );
+			window.__karma__ = {
+				config: config.config
+			};
+
+			// We need to wait for document ready so `ckeditor.js` won't use `document.write`.
+			// Scripts should be loaded in the following order:
+			//		* initial scripts - see bender.js#getInitialScripts
+			//		* ckeditor.js - it triggers loader which loads all core files
+			//		* karma scripts (after all CKEditor core scripts are loaded) - see bender.js#getTestsScripts
+			//			* the last script in karma scripts is always a test file which will be run
+			document.onreadystatechange = function () {
+				if ( !document.readyState || document.readyState === 'complete' ) {
+					loadScripts( config.scripts.initial, function( error ) {
+						if ( error ) {
+							console.error( error );
+						} else {
+							loadScripts( [ config.scripts.ckeditor ], function ( error ) {
+								if ( error ) {
+									console.error( error );
+								} else {
+									var loaded = false;
+									var intervalId = setInterval( function() {
+										if ( CKEDITOR && CKEDITOR.loader && CKEDITOR.loader.loadedScripts.length === loaded ) {
+											clearInterval( intervalId );
+											loadScripts( config.scripts.karma, function ( error ) {
+												if ( error ) {
+													console.error( error );
+												} else {
+													window.mocha.run();
+												}
+											} );
+										}
+										loaded = CKEDITOR.loader.loadedScripts.length;
+									}, 30 );
+								}
+							} );
+						}
+					} );
+				}
+			};
+		} () );
+		</script>
+
+	</body>
+
+</html>

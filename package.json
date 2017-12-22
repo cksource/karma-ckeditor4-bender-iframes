@@ -1,0 +1,19 @@
+{
+  "name": "karma-ckeditor4-bender-iframes",
+  "version": "0.1.0",
+  "description": "A Karma plugin which runs each benderjs test suite in the separate iframe.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/cksource/karma-ckeditor4-bender-iframes.git"
+	},
+	"author": "CKSource (http://cksource.com/)",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/cksource/karma-ckeditor4-bender-iframes/issues"
+	},
+	"homepage": "https://github.com/cksource/karma-ckeditor4-bender-iframes#readme"
+}
