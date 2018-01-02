@@ -21,10 +21,26 @@ window.bender = window.bender || {};
 
 	// Sends post message to the host window.
 	function sendMessage( type, data ) {
-		window.parent.postMessage( JSON.stringify( {
-			type: type,
-			data: data
-		} ), '*' );
+		var message;
+
+		try {
+			message = JSON.stringify( {
+				type: type,
+				data: data
+			} );
+		} catch ( err ) {
+			if ( err.message.match( /Converting circular structure to JSON/i ) ) {
+				data.args = [ data.args[ 0 ] ];
+			} else {
+				data.args = [ 'Error while converting console log: ' + err.message ];
+			}
+			message = JSON.stringify( {
+				type: type,
+				data: data
+			} );
+		}
+
+		window.parent.postMessage( message, '*' );
 	}
 
 	// Pass console messages to host window.
