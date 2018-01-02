@@ -55,6 +55,7 @@ window.bender = window.bender || {};
 		var scripts = [];
 		scripts = scripts.concat( getFilesPath( /.*\/_karma\/(?!runner\.js).*\.js/ ) );
 		scripts = scripts.concat( getFilesPath( /_karma\/runner.js/ ) );
+		scripts = scripts.concat( getFilesPath( /\/_helpers\// ) );
 		scripts.push( testFile.fullpath );
 		return scripts;
 	}
