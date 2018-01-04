@@ -138,6 +138,10 @@ window.bender = window.bender || {};
 
 					case 'result':
 						// Single test execution ended inside iframe.
+						if ( !data.time ) {
+							// When error is thrown, time is not set which results in total time to be NaN.
+							data.time = 0;
+						}
 						runner.result( data );
 						break;
 
