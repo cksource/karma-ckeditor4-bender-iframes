@@ -110,6 +110,7 @@ window.bender = window.bender || {};
 
 	window.__karma__.result = function( data ) {
 		sendMessage( 'result', data );
+		errors = [];
 	};
 
 	window.__karma__.error = function( data ) {
